@@ -1,0 +1,214 @@
+import SwiftUI
+import CoreLocation
+
+struct YAMLPreviewView: View {
+    let poi: POI
+    @Environment(\.dismiss) var dismiss
+
+    @State private var copied = false
+
+    var captureData: CaptureData {
+        CaptureData(
+            date: ISO8601DateFormatter().string(from: Date()),
+            name: poi.name,
+            address: poi.address,
+            latitude: poi.coordinate.latitude,
+            longitude: poi.coordinate.longitude
+        )
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("📍 \(poi.name)")
+                        .font(.headline)
+                        .lineLimit(2)
+
+                    Text(poi.address)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+
+                    Text(poi.formattedDistance)
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("YAML")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray)
+
+                    Text(captureData.yamlString)
+                        .font(.system(.caption, design: .monospaced))
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                }
+
+                HStack(spacing: 12) {
+                    Button(action: copyToClipboard) {
+                        HStack(spacing: 6) {
+                            Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                            Text(copied ? "Copied" : "Copy YAML")
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                    }
+
+                    ShareLink(
+                        item: captureData.yamlString,
+                        subject: Text(poi.name),
+                        message: Text("Location: \(poi.address)")
+                    ) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "square.and.arrow.up")
+                            Text("Share")
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .background(Color.green)
+                        .cornerRadius(8)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Log Entry")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Text("Back")
+                    }
+                }
+            }
+        }
+    }
+
+    private func copyToClipboard() {
+        UIPasteboard.general.string = captureData.yamlString
+        copied = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            copied = false
+        }
+    }
+}
+
+struct RawCoordinatesView: View {
+    let currentLocation: CLLocationCoordinate2D?
+    @Environment(\.dismiss) var dismiss
+
+    @State private var copied = false
+
+    var captureData: CaptureData? {
+        guard let location = currentLocation else { return nil }
+        return CaptureData(
+            date: ISO8601DateFormatter().string(from: Date()),
+            name: "Unknown Location",
+            address: "",
+            latitude: location.latitude,
+            longitude: location.longitude
+        )
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                if let data = captureData {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("📍 Raw Coordinates")
+                            .font(.headline)
+
+                        Text(String(format: "%.6f, %.6f", data.latitude, data.longitude))
+                            .font(.caption)
+                            .monospaced()
+                            .foregroundColor(.blue)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("YAML")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.gray)
+
+                        Text(data.yamlString)
+                            .font(.system(.caption, design: .monospaced))
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                    }
+
+                    HStack(spacing: 12) {
+                        Button(action: copyToClipboard) {
+                            HStack(spacing: 6) {
+                                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                                Text(copied ? "Copied" : "Copy YAML")
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                        }
+
+                        ShareLink(
+                            item: data.yamlString,
+                            message: Text("Raw coordinates")
+                        ) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Share")
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.green)
+                            .cornerRadius(8)
+                        }
+                    }
+                } else {
+                    Text("Unable to get location")
+                        .foregroundColor(.red)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Log Entry")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        Text("Back")
+                    }
+                }
+            }
+        }
+    }
+
+    private func copyToClipboard() {
+        guard let data = captureData else { return }
+        UIPasteboard.general.string = data.yamlString
+        copied = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            copied = false
+        }
+    }
+}
