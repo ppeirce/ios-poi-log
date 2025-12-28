@@ -50,7 +50,9 @@ struct ContentView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
+                .frame(minHeight: 44) // Ensure minimum accessibility hit area
                 .padding(12)
+                .contentShape(Rectangle()) // Make entire button area tappable
                 .background(locationManager.currentLocation != nil && !searchManager.isSearching ? Color.blue : Color.gray)
                 .foregroundColor(.white)
                 .cornerRadius(8)
