@@ -8,7 +8,8 @@ class POISearchManager: ObservableObject {
     @Published var isSearching = false
     @Published var error: Error?
 
-    private let searchRadius: CLLocationDistance = 8040.67 // 0.5 miles in meters
+    static let defaultSearchRadius: CLLocationDistance = 8040.67 // 0.5 miles in meters
+    let searchRadius: CLLocationDistance = defaultSearchRadius
 
     func searchNearbyPOIs(from coordinate: CLLocationCoordinate2D) async {
         isSearching = true

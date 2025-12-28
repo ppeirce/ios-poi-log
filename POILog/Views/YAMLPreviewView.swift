@@ -1,11 +1,23 @@
 import SwiftUI
 import CoreLocation
+import MapKit
 
 struct YAMLPreviewView: View {
     let poi: POI
     @Environment(\.dismiss) var dismiss
 
     @State private var copied = false
+    @State private var region: MKCoordinateRegion
+
+    init(poi: POI) {
+        self.poi = poi
+        _region = State(
+            initialValue: MKCoordinateRegion(
+                center: poi.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+            )
+        )
+    }
 
     var captureData: CaptureData {
         let now = Date()
@@ -88,6 +100,12 @@ struct YAMLPreviewView: View {
                         .cornerRadius(8)
                     }
                 }
+
+                Map(coordinateRegion: $region, annotationItems: [poi]) { item in
+                    MapMarker(coordinate: item.coordinate, tint: .red)
+                }
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 Spacer()
             }

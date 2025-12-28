@@ -1,9 +1,11 @@
 import SwiftUI
 import CoreLocation
+import MapKit
 
 struct POIListView: View {
     let pois: [POI]
     let currentLocation: CLLocationCoordinate2D?
+    let searchRadius: CLLocationDistance
     @Binding var isPresented: Bool
 
     @State private var sheetContent: SheetContent?
@@ -28,7 +30,8 @@ struct POIListView: View {
             VStack(spacing: 0) {
                 HStack {
                     Text("Nearby Places")
-                        .font(.headline)
+                        .font(.title3)
+                        .fontWeight(.semibold)
                     Spacer()
                     Button(action: { isPresented = false }) {
                         Image(systemName: "xmark.circle.fill")
@@ -44,25 +47,28 @@ struct POIListView: View {
                 } else {
                     List {
                         ForEach(pois) { poi in
-                            POIRowView(poi: poi)
+                            POIRowView(poi: poi, searchRadius: searchRadius)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     sheetContent = .poiPreview(poi)
                                 }
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                                .listRowBackground(Color.clear)
                         }
                     }
                     .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
 
                     Divider()
 
                     Button(action: { sheetContent = .rawCoordinates }) {
-                        HStack {
-                            Image(systemName: "exclamationmark.circle")
-                            Text("None of these, use raw coordinates")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .foregroundColor(.orange)
+                        Label("None of these, use raw coordinates", systemImage: "exclamationmark.circle")
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .foregroundColor(.orange)
+                            .background(Color.orange.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
                     .padding()
                 }
@@ -81,29 +87,57 @@ struct POIListView: View {
 
 struct POIRowView: View {
     let poi: POI
+    let searchRadius: CLLocationDistance
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(poi.name)
-                .font(.headline)
-                .lineLimit(2)
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(poi.name)
+                    .font(.headline)
+                    .lineLimit(2)
 
-            if let category = poi.category {
-                Text(category)
+                if let category = poi.category {
+                    Text(category)
+                        .font(.caption2)
+                        .foregroundColor(.orange)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Color.orange.opacity(0.14))
+                        .clipShape(Capsule())
+                }
+
+                Text(poi.address)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+
+                Label(poi.formattedDistance, systemImage: "location.fill")
                     .font(.caption)
-                    .foregroundColor(.orange)
+                    .foregroundColor(.blue)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text(poi.address)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .lineLimit(2)
-
-            Text(poi.formattedDistance)
-                .font(.caption)
-                .foregroundColor(.blue)
+            Map(coordinateRegion: .constant(region), interactionModes: [], annotationItems: [poi]) { item in
+                MapMarker(coordinate: item.coordinate, tint: .red)
+            }
+            .frame(width: 76, height: 76)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
-        .padding(.vertical, 8)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemGray6))
+        )
+    }
+
+    private var region: MKCoordinateRegion {
+        let baseSpanDelta: CLLocationDegrees = 0.002
+        let scale = searchRadius / POISearchManager.defaultSearchRadius
+        let delta = baseSpanDelta * scale
+        return MKCoordinateRegion(
+            center: poi.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: delta, longitudeDelta: delta)
+        )
     }
 }
 

@@ -68,6 +68,7 @@ struct ContentView: View {
                 POIListView(
                     pois: searchManager.nearbyPOIs,
                     currentLocation: locationManager.currentLocation,
+                    searchRadius: searchManager.searchRadius,
                     isPresented: $showPOIList
                 )
                 .transition(.move(edge: .bottom))
