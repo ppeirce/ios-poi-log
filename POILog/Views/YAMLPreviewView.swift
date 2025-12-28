@@ -7,14 +7,16 @@ struct YAMLPreviewView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var copied = false
-    @State private var region: MKCoordinateRegion
+    @State private var mapPosition: MapCameraPosition
 
     init(poi: POI) {
         self.poi = poi
-        _region = State(
-            initialValue: MKCoordinateRegion(
-                center: poi.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        _mapPosition = State(
+            initialValue: .region(
+                MKCoordinateRegion(
+                    center: poi.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
             )
         )
     }
@@ -101,8 +103,9 @@ struct YAMLPreviewView: View {
                     }
                 }
 
-                Map(coordinateRegion: $region, annotationItems: [poi]) { item in
-                    MapMarker(coordinate: item.coordinate, tint: .red)
+                Map(position: $mapPosition) {
+                    Marker(poi.name, coordinate: poi.coordinate)
+                        .tint(.red)
                 }
                 .frame(height: 220)
                 .clipShape(RoundedRectangle(cornerRadius: 8))

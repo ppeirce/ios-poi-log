@@ -117,8 +117,9 @@ struct POIRowView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Map(coordinateRegion: .constant(region), interactionModes: [], annotationItems: [poi]) { item in
-                MapMarker(coordinate: item.coordinate, tint: .red)
+            Map(position: .constant(mapPosition), interactionModes: []) {
+                Marker(poi.name, coordinate: poi.coordinate)
+                    .tint(.red)
             }
             .frame(width: 76, height: 76)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -138,6 +139,10 @@ struct POIRowView: View {
             center: poi.coordinate,
             span: MKCoordinateSpan(latitudeDelta: delta, longitudeDelta: delta)
         )
+    }
+
+    private var mapPosition: MapCameraPosition {
+        .region(region)
     }
 }
 
