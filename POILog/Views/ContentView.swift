@@ -38,24 +38,26 @@ struct ContentView: View {
                 }
 
                 Button(action: captureLocation) {
-                    if searchManager.isSearching {
-                        HStack(spacing: 8) {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                            Text("Searching...")
+                    Group {
+                        if searchManager.isSearching {
+                            HStack(spacing: 8) {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                                Text("Searching...")
+                            }
+                        } else {
+                            Text("📍 Capture Location")
+                                .fontWeight(.semibold)
                         }
-                    } else {
-                        Text("📍 Capture Location")
-                            .fontWeight(.semibold)
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44) // Ensure minimum accessibility hit area
+                    .padding(12)
+                    .background(locationManager.currentLocation != nil && !searchManager.isSearching ? Color.blue : Color.gray)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(minHeight: 44) // Ensure minimum accessibility hit area
-                .padding(12)
-                .contentShape(Rectangle()) // Make entire button area tappable
-                .background(locationManager.currentLocation != nil && !searchManager.isSearching ? Color.blue : Color.gray)
-                .foregroundColor(.white)
-                .cornerRadius(8)
+                .buttonStyle(.plain) // Prevent default button styling
                 .disabled(locationManager.currentLocation == nil || searchManager.isSearching)
 
                 Spacer()
