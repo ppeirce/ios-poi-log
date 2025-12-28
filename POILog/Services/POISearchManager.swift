@@ -12,7 +12,9 @@ class POISearchManager: ObservableObject {
     let searchRadius: CLLocationDistance = defaultSearchRadius
 
     func searchNearbyPOIs(from coordinate: CLLocationCoordinate2D) async {
+        guard !isSearching else { return }
         isSearching = true
+        error = nil
         defer { isSearching = false }
 
         let region = MKCoordinateRegion(

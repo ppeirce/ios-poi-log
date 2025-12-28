@@ -9,7 +9,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var error: Error?
 
     private let locationManager = CLLocationManager()
-    private var hasRequestedLocation = false
 
     override init() {
         super.init()
@@ -19,6 +18,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func requestLocation() {
+        error = nil
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
     }
@@ -49,8 +49,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let status = manager.authorizationStatus
         DispatchQueue.main.async { [weak self] in
             self?.authorizationStatus = status
-            if (status == .authorizedWhenInUse || status == .authorizedAlways) && !(self?.hasRequestedLocation ?? false) {
-                self?.hasRequestedLocation = true
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
                 self?.locationManager.requestLocation()
             }
         }
