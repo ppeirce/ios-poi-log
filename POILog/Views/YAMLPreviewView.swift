@@ -8,8 +8,15 @@ struct YAMLPreviewView: View {
     @State private var copied = false
 
     var captureData: CaptureData {
-        CaptureData(
-            date: ISO8601DateFormatter().string(from: Date()),
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+
+        return CaptureData(
+            date: dateFormatter.string(from: now),
+            time: timeFormatter.string(from: now),
             name: poi.name,
             address: poi.address,
             latitude: poi.coordinate.latitude,
@@ -114,8 +121,15 @@ struct RawCoordinatesView: View {
 
     var captureData: CaptureData? {
         guard let location = currentLocation else { return nil }
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+
         return CaptureData(
-            date: ISO8601DateFormatter().string(from: Date()),
+            date: dateFormatter.string(from: now),
+            time: timeFormatter.string(from: now),
             name: "Unknown Location",
             address: "",
             latitude: location.latitude,

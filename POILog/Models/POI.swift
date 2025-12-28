@@ -19,6 +19,7 @@ struct POI: Identifiable {
 
 struct CaptureData: Codable {
     let date: String
+    let time: String
     let name: String
     let address: String
     let latitude: Double
@@ -27,6 +28,7 @@ struct CaptureData: Codable {
     var yamlString: String {
         """
         date: \(date)
+        time: \(time)
         name: \(name)
         address: \(address)
         coordinates: \(latitude), \(longitude)
