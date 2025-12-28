@@ -6,8 +6,19 @@ struct POIListView: View {
     let currentLocation: CLLocationCoordinate2D?
     @Binding var isPresented: Bool
 
-    @State private var selectedPOI: POI?
-    @State private var showYAMLPreview = false
+    @State private var sheetContent: SheetContent?
+
+    enum SheetContent: Identifiable {
+        case poiPreview(POI)
+        case rawCoordinates
+
+        var id: String {
+            switch self {
+            case .poiPreview(let poi): return poi.id.uuidString
+            case .rawCoordinates: return "raw"
+            }
+        }
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -36,8 +47,7 @@ struct POIListView: View {
                             POIRowView(poi: poi)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    selectedPOI = poi
-                                    showYAMLPreview = true
+                                    sheetContent = .poiPreview(poi)
                                 }
                         }
                     }
@@ -45,7 +55,7 @@ struct POIListView: View {
 
                     Divider()
 
-                    Button(action: { showYAMLPreview = true }) {
+                    Button(action: { sheetContent = .rawCoordinates }) {
                         HStack {
                             Image(systemName: "exclamationmark.circle")
                             Text("None of these, use raw coordinates")
@@ -58,10 +68,11 @@ struct POIListView: View {
                 }
             }
         }
-        .sheet(isPresented: $showYAMLPreview) {
-            if let poi = selectedPOI {
+        .sheet(item: $sheetContent) { content in
+            switch content {
+            case .poiPreview(let poi):
                 YAMLPreviewView(poi: poi)
-            } else {
+            case .rawCoordinates:
                 RawCoordinatesView(currentLocation: currentLocation)
             }
         }
