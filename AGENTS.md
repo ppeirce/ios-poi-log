@@ -12,6 +12,12 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Dev Process
+
+- Always run a build before wrapping work. For CLI, use xcodebuild -scheme POILog -destination 'generic/platform=iOS' -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO build to avoid signing blocks.
+- When adding new Swift files, update POILog.xcodeproj/project.pbxproj so they compile in the target.
+- Default to bead tracking: create/claim issues up front, update status as you go, close when done.
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
@@ -21,20 +27,7 @@ bd sync               # Sync with git
 1. **File issues for remaining work** - Create issues for anything that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-   ```bash
-   git pull --rebase
-   bd sync
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
 5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
+6. **Verify** - All changes committed
 7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
 
