@@ -88,6 +88,12 @@ struct POIRowView: View {
                 .font(.headline)
                 .lineLimit(2)
 
+            if let category = poi.category {
+                Text(category)
+                    .font(.caption)
+                    .foregroundColor(.orange)
+            }
+
             Text(poi.address)
                 .font(.subheadline)
                 .foregroundColor(.gray)

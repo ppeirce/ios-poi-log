@@ -7,6 +7,7 @@ struct POI: Identifiable {
     let address: String
     let coordinate: CLLocationCoordinate2D
     let distance: Double
+    let category: String?
 
     var formattedDistance: String {
         let miles = distance / 1609.34

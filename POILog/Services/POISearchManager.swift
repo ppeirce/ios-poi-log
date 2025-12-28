@@ -37,11 +37,17 @@ class POISearchManager: ObservableObject {
 
                 guard distance <= searchRadius else { return nil }
 
+                // Format category for display
+                let category = item.pointOfInterestCategory?.rawValue
+                    .replacingOccurrences(of: "MKPOICategory", with: "")
+                    .replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
+
                 return POI(
                     name: name,
                     address: item.placemark.title ?? "Unknown",
                     coordinate: placemark.coordinate,
-                    distance: distance
+                    distance: distance,
+                    category: category
                 )
             }
 
