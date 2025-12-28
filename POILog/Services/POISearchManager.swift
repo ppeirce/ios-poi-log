@@ -19,17 +19,8 @@ class POISearchManager: ObservableObject {
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
 
-        // Include a broad range of POI categories
-        let poiCategories: [MKPointOfInterestCategory] = [
-            .restaurant, .cafe, .bakery,
-            .pharmacy, .airport, .hotel,
-            .museum, .theater, .park,
-            .library, .bank, .atm,
-            .amusementPark, .aquarium, .zoo
-        ]
-
         let request = MKLocalPointsOfInterestRequest(coordinateRegion: region)
-        request.pointOfInterestFilter = MKPointOfInterestFilter(including: poiCategories)
+        request.pointOfInterestFilter = .includingAll
 
         let search = MKLocalSearch(request: request)
 
