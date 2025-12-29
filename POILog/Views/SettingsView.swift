@@ -1,14 +1,17 @@
 import SwiftUI
+import MapKit
 
 struct SettingsView: View {
     @ObservedObject var searchManager: POISearchManager
 
     var body: some View {
         Form {
-            Section("Filters") {
-                Toggle("Return only restaurants", isOn: $searchManager.onlyRestaurants)
+            Section("Categories") {
+                ForEach(POISearchManager.availableCategories, id: \.rawValue) { category in
+                    Toggle(category.displayName, isOn: binding(for: category))
+                }
 
-                Text("When enabled, the app only searches for restaurants.")
+                Text("Defaults to Restaurants and Nightlife (Bars).")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -23,6 +26,19 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func binding(for category: MKPointOfInterestCategory) -> Binding<Bool> {
+        Binding(
+            get: { searchManager.selectedCategories.contains(category) },
+            set: { isOn in
+                if isOn {
+                    searchManager.selectedCategories.insert(category)
+                } else {
+                    searchManager.selectedCategories.remove(category)
+                }
+            }
+        )
     }
 }
 

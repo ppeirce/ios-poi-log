@@ -59,7 +59,7 @@ struct CheckInView: View {
             guard let coordinate = mapCenterCoordinate else { return }
             handleMapCenterChange(coordinate)
         }
-        .onChange(of: searchManager.onlyRestaurants) { _, _ in
+        .onChange(of: searchManager.selectedCategories) { _, _ in
             handleFilterChange()
         }
         .onChange(of: searchManager.debugMode) { _, _ in
@@ -138,7 +138,7 @@ struct CheckInView: View {
         lines.append(String(
             format: "Radius: %.2f mi | Categories: %@",
             searchRadiusMiles,
-            searchManager.onlyRestaurants ? "restaurants" : "all"
+            categoriesLabel
         ))
 
         if let coordinate = mapCenterCoordinate {
@@ -177,6 +177,23 @@ struct CheckInView: View {
 
     private var searchRadiusMiles: Double {
         searchManager.searchRadius / 1609.34
+    }
+
+    private var categoriesLabel: String {
+        let selections = searchManager.selectedCategories
+        if selections.isEmpty {
+            return "none"
+        }
+        if selections.count == POISearchManager.availableCategories.count {
+            return "all"
+        }
+
+        let names = selections.map(\.displayName).sorted()
+        if names.count <= 3 {
+            return names.joined(separator: ", ")
+        }
+        let prefix = names.prefix(2).joined(separator: ", ")
+        return "\(prefix) +\(names.count - 2)"
     }
 
     private var shouldShowDiagnostics: Bool {
