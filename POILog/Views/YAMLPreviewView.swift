@@ -5,8 +5,10 @@ import MapKit
 struct YAMLPreviewView: View {
     let poi: POI
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var historyStore: CheckInHistoryStore
 
     @State private var copied = false
+    @State private var didLogHistory = false
     @State private var mapPosition: MapCameraPosition
 
     init(poi: POI) {
@@ -122,6 +124,9 @@ struct YAMLPreviewView: View {
                     }
                 }
             }
+            .onAppear {
+                logHistoryIfNeeded()
+            }
         }
     }
 
@@ -132,13 +137,28 @@ struct YAMLPreviewView: View {
             copied = false
         }
     }
+
+    private func logHistoryIfNeeded() {
+        guard !didLogHistory else { return }
+        didLogHistory = true
+        let record = CheckInRecord(
+            name: poi.name,
+            address: poi.address,
+            latitude: poi.coordinate.latitude,
+            longitude: poi.coordinate.longitude,
+            category: poi.category
+        )
+        historyStore.add(record)
+    }
 }
 
 struct RawCoordinatesView: View {
     let currentLocation: CLLocationCoordinate2D?
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var historyStore: CheckInHistoryStore
 
     @State private var copied = false
+    @State private var didLogHistory = false
 
     var captureData: CaptureData? {
         guard let location = currentLocation else { return nil }
@@ -235,6 +255,9 @@ struct RawCoordinatesView: View {
                     }
                 }
             }
+            .onAppear {
+                logHistoryIfNeeded()
+            }
         }
     }
 
@@ -245,5 +268,18 @@ struct RawCoordinatesView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             copied = false
         }
+    }
+
+    private func logHistoryIfNeeded() {
+        guard !didLogHistory, let location = currentLocation else { return }
+        didLogHistory = true
+        let record = CheckInRecord(
+            name: "Unknown Location",
+            address: "",
+            latitude: location.latitude,
+            longitude: location.longitude,
+            category: nil
+        )
+        historyStore.add(record)
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @StateObject private var searchManager = POISearchManager()
+    @StateObject private var historyStore = CheckInHistoryStore()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -16,7 +17,7 @@ struct ContentView: View {
             .tabItem { Label("Check In", systemImage: "mappin.and.ellipse") }
 
             NavigationStack {
-                VisitedPlacesView()
+                VisitedPlacesView(locationManager: locationManager)
             }
             .tabItem { Label("Visited", systemImage: "clock") }
 
@@ -25,6 +26,7 @@ struct ContentView: View {
             }
             .tabItem { Label("Settings", systemImage: "gearshape") }
         }
+        .environmentObject(historyStore)
         .task {
             locationManager.requestLocation()
         }
