@@ -1,5 +1,4 @@
 import SwiftUI
-import MapKit
 
 struct SettingsView: View {
     @ObservedObject var searchManager: POISearchManager
@@ -7,8 +6,15 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section("Categories") {
-                ForEach(POISearchManager.availableCategories, id: \.rawValue) { category in
-                    Toggle(category.displayName, isOn: binding(for: category))
+                NavigationLink {
+                    CategorySelectionView(searchManager: searchManager)
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("POI Categories")
+                        Text(selectedSummary)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 Text("Defaults to Restaurants and Nightlife (Bars).")
@@ -28,17 +34,20 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func binding(for category: MKPointOfInterestCategory) -> Binding<Bool> {
-        Binding(
-            get: { searchManager.selectedCategories.contains(category) },
-            set: { isOn in
-                if isOn {
-                    searchManager.selectedCategories.insert(category)
-                } else {
-                    searchManager.selectedCategories.remove(category)
-                }
-            }
-        )
+    private var selectedSummary: String {
+        let selections = searchManager.selectedCategories
+        if selections.isEmpty {
+            return "None selected"
+        }
+        if selections.count == POISearchManager.availableCategories.count {
+            return "All categories"
+        }
+
+        let names = selections.map(\.displayName).sorted()
+        if names.count <= 3 {
+            return names.joined(separator: ", ")
+        }
+        return "\(names.count) selected"
     }
 }
 
