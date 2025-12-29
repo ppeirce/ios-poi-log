@@ -7,9 +7,29 @@ class POISearchManager: ObservableObject {
     @Published var nearbyPOIs: [POI] = []
     @Published var isSearching = false
     @Published var error: Error?
+    @Published var onlyRestaurants: Bool {
+        didSet {
+            userDefaults.set(onlyRestaurants, forKey: Self.onlyRestaurantsKey)
+        }
+    }
+    @Published var debugMode: Bool {
+        didSet {
+            userDefaults.set(debugMode, forKey: Self.debugModeKey)
+        }
+    }
 
     static let defaultSearchRadius: CLLocationDistance = 8040.67 // 0.5 miles in meters
     let searchRadius: CLLocationDistance = defaultSearchRadius
+    private static let onlyRestaurantsKey = "onlyRestaurants"
+    private static let debugModeKey = "debugMode"
+
+    private let userDefaults: UserDefaults
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        self.onlyRestaurants = userDefaults.object(forKey: Self.onlyRestaurantsKey) as? Bool ?? false
+        self.debugMode = userDefaults.object(forKey: Self.debugModeKey) as? Bool ?? false
+    }
 
     func searchNearbyPOIs(from coordinate: CLLocationCoordinate2D) async {
         guard !isSearching else { return }
@@ -23,7 +43,7 @@ class POISearchManager: ObservableObject {
         )
 
         let request = MKLocalPointsOfInterestRequest(coordinateRegion: region)
-        request.pointOfInterestFilter = .includingAll
+        request.pointOfInterestFilter = pointOfInterestFilter
 
         let search = MKLocalSearch(request: request)
 
@@ -55,10 +75,17 @@ class POISearchManager: ObservableObject {
             }
 
             pois.sort { $0.distance < $1.distance }
-            self.nearbyPOIs = Array(pois.prefix(10))
+            self.nearbyPOIs = pois
         } catch {
             self.error = error
             self.nearbyPOIs = []
         }
+    }
+
+    private var pointOfInterestFilter: MKPointOfInterestFilter {
+        if onlyRestaurants {
+            return MKPointOfInterestFilter(including: [.restaurant])
+        }
+        return .includingAll
     }
 }

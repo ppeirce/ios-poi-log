@@ -1,26 +1,31 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @ObservedObject var searchManager: POISearchManager
+
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "gearshape")
-                .font(.system(size: 36))
-                .foregroundColor(.secondary)
+        Form {
+            Section("Filters") {
+                Toggle("Return only restaurants", isOn: $searchManager.onlyRestaurants)
 
-            Text("Settings")
-                .font(.headline)
+                Text("When enabled, the app only searches for restaurants.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
 
-            Text("Search radius and filters will live here.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+            Section("Debug") {
+                Toggle("Debug mode", isOn: $searchManager.debugMode)
+
+                Text("Shows POI diagnostics and searches from the map center.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(searchManager: POISearchManager())
 }

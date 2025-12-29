@@ -21,7 +21,7 @@ struct ContentView: View {
             .tabItem { Label("Visited", systemImage: "clock") }
 
             NavigationStack {
-                SettingsView()
+                SettingsView(searchManager: searchManager)
             }
             .tabItem { Label("Settings", systemImage: "gearshape") }
         }

@@ -4,15 +4,22 @@ import MapKit
 struct CurrentLocationMapView: View {
     let currentLocation: CLLocationCoordinate2D?
 
-    @State private var mapPosition: MapCameraPosition
+    @Binding var mapPosition: MapCameraPosition
+    @Binding var mapCenterCoordinate: CLLocationCoordinate2D?
+    var shouldRecenterOnLocationChange: Bool = true
 
-    init(currentLocation: CLLocationCoordinate2D?) {
+    @State private var hasSetInitialPosition = false
+
+    init(
+        currentLocation: CLLocationCoordinate2D?,
+        mapPosition: Binding<MapCameraPosition>,
+        mapCenterCoordinate: Binding<CLLocationCoordinate2D?>,
+        shouldRecenterOnLocationChange: Bool = true
+    ) {
         self.currentLocation = currentLocation
-        if let location = currentLocation {
-            _mapPosition = State(initialValue: CurrentLocationMapView.regionPosition(for: location))
-        } else {
-            _mapPosition = State(initialValue: .automatic)
-        }
+        _mapPosition = mapPosition
+        _mapCenterCoordinate = mapCenterCoordinate
+        self.shouldRecenterOnLocationChange = shouldRecenterOnLocationChange
     }
 
     var body: some View {
@@ -24,11 +31,28 @@ struct CurrentLocationMapView: View {
         .mapControls {
             MapUserLocationButton()
         }
+        .onAppear {
+            guard let location = currentLocation, !hasSetInitialPosition else { return }
+            mapPosition = CurrentLocationMapView.regionPosition(for: location)
+            mapCenterCoordinate = location
+            hasSetInitialPosition = true
+        }
         .onChange(of: locationKey) { _, _ in
             guard let location = currentLocation else { return }
-            withAnimation {
+            if shouldRecenterOnLocationChange {
+                withAnimation {
+                    mapPosition = CurrentLocationMapView.regionPosition(for: location)
+                }
+                mapCenterCoordinate = location
+                hasSetInitialPosition = true
+            } else if !hasSetInitialPosition {
                 mapPosition = CurrentLocationMapView.regionPosition(for: location)
+                mapCenterCoordinate = location
+                hasSetInitialPosition = true
             }
+        }
+        .onMapCameraChange { context in
+            mapCenterCoordinate = context.region.center
         }
     }
 
@@ -48,5 +72,9 @@ struct CurrentLocationMapView: View {
 }
 
 #Preview {
-    CurrentLocationMapView(currentLocation: CLLocationCoordinate2D(latitude: 37.8012, longitude: -122.2727))
+    CurrentLocationMapView(
+        currentLocation: CLLocationCoordinate2D(latitude: 37.8012, longitude: -122.2727),
+        mapPosition: .constant(.automatic),
+        mapCenterCoordinate: .constant(nil)
+    )
 }
