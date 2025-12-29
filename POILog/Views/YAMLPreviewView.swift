@@ -105,6 +105,19 @@ struct YAMLPreviewView: View {
                     }
                 }
 
+                Button(action: checkIn) {
+                    HStack(spacing: 6) {
+                        Image(systemName: didLogHistory ? "checkmark.circle.fill" : "checkmark.circle")
+                        Text(didLogHistory ? "Checked In" : "Check In")
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(didLogHistory ? Color.orange.opacity(0.7) : Color.orange)
+                    .cornerRadius(8)
+                }
+                .disabled(didLogHistory)
+
                 Map(position: $mapPosition) {
                     Marker(poi.name, coordinate: poi.coordinate)
                         .tint(.red)
@@ -124,9 +137,6 @@ struct YAMLPreviewView: View {
                     }
                 }
             }
-            .onAppear {
-                logHistoryIfNeeded()
-            }
         }
     }
 
@@ -138,7 +148,7 @@ struct YAMLPreviewView: View {
         }
     }
 
-    private func logHistoryIfNeeded() {
+    private func checkIn() {
         guard !didLogHistory else { return }
         didLogHistory = true
         let record = CheckInRecord(
@@ -223,25 +233,38 @@ struct RawCoordinatesView: View {
                             .cornerRadius(8)
                         }
 
-                        ShareLink(
-                            item: data.yamlString,
-                            message: Text("Raw coordinates")
-                        ) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "square.and.arrow.up")
-                                Text("Share")
-                            }
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(Color.green)
-                            .cornerRadius(8)
+                    ShareLink(
+                        item: data.yamlString,
+                        message: Text("Raw coordinates")
+                    ) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "square.and.arrow.up")
+                            Text("Share")
                         }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .background(Color.green)
+                        .cornerRadius(8)
                     }
-                } else {
-                    Text("Unable to get location")
-                        .foregroundColor(.red)
                 }
+
+                Button(action: checkIn) {
+                    HStack(spacing: 6) {
+                        Image(systemName: didLogHistory ? "checkmark.circle.fill" : "checkmark.circle")
+                        Text(didLogHistory ? "Checked In" : "Check In")
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(didLogHistory ? Color.orange.opacity(0.7) : Color.orange)
+                    .cornerRadius(8)
+                }
+                .disabled(didLogHistory || captureData == nil)
+            } else {
+                Text("Unable to get location")
+                    .foregroundColor(.red)
+            }
 
                 Spacer()
             }
@@ -255,9 +278,6 @@ struct RawCoordinatesView: View {
                     }
                 }
             }
-            .onAppear {
-                logHistoryIfNeeded()
-            }
         }
     }
 
@@ -270,7 +290,7 @@ struct RawCoordinatesView: View {
         }
     }
 
-    private func logHistoryIfNeeded() {
+    private func checkIn() {
         guard !didLogHistory, let location = currentLocation else { return }
         didLogHistory = true
         let record = CheckInRecord(
