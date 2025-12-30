@@ -27,12 +27,14 @@ struct CaptureData: Codable {
     let longitude: Double
 
     var yamlString: String {
-        """
+        let formattedLatitude = String(format: "%.6f", latitude)
+        let formattedLongitude = String(format: "%.6f", longitude)
+        return """
         date: \(date)
         time: \(time)
         name: \(name)
         address: \(address)
-        coordinates: \(latitude), \(longitude)
+        coordinates: \(formattedLatitude), \(formattedLongitude)
         """
     }
 }

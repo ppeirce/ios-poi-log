@@ -10,6 +10,8 @@ struct CheckInRecord: Identifiable, Codable {
     let category: String?
     let createdAt: Date
 
+    private static let coordinateScale = 1_000_000.0
+
     init(
         id: UUID = UUID(),
         name: String,
@@ -22,10 +24,14 @@ struct CheckInRecord: Identifiable, Codable {
         self.id = id
         self.name = name
         self.address = address
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = Self.roundedCoordinate(latitude)
+        self.longitude = Self.roundedCoordinate(longitude)
         self.category = category
         self.createdAt = createdAt
+    }
+
+    private static func roundedCoordinate(_ value: Double) -> Double {
+        (value * coordinateScale).rounded() / coordinateScale
     }
 
     var coordinate: CLLocationCoordinate2D {
