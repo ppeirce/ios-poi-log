@@ -73,10 +73,15 @@ struct VisitedPlacesView: View {
             }
 
             ForEach(filteredRecords) { record in
-                HistoryRowView(record: record, currentLocation: locationManager.currentLocation)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                    .listRowBackground(Color.clear)
+                NavigationLink {
+                    VisitedPlaceDetailView(record: record)
+                } label: {
+                    HistoryRowView(record: record, currentLocation: locationManager.currentLocation)
+                }
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                .listRowBackground(Color.clear)
             }
             .onDelete(perform: historyStore.remove)
         }

@@ -73,6 +73,13 @@ final class CheckInHistoryStore: ObservableObject {
         save()
     }
 
+    func update(_ record: CheckInRecord) {
+        guard let index = records.firstIndex(where: { $0.id == record.id }) else { return }
+        records[index] = record
+        records.sort { $0.createdAt > $1.createdAt }
+        save()
+    }
+
     func exportJSON(records: [CheckInRecord]) -> String {
         let exportEncoder = JSONEncoder()
         exportEncoder.dateEncodingStrategy = .iso8601
