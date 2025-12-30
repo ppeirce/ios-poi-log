@@ -74,7 +74,7 @@ struct VisitedPlacesView: View {
 
             ForEach(filteredRecords) { record in
                 NavigationLink {
-                    VisitedPlaceDetailView(record: record)
+                    VisitedLogEntryView(record: record)
                 } label: {
                     HistoryRowView(record: record, currentLocation: locationManager.currentLocation)
                 }

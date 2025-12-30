@@ -2,12 +2,11 @@ import SwiftUI
 import CoreLocation
 import MapKit
 
-struct YAMLPreviewView: View {
+struct CheckInLogEntryView: View {
     let poi: POI
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var historyStore: CheckInHistoryStore
 
-    @State private var copied = false
     @State private var didLogHistory = false
     @State private var mapPosition: MapCameraPosition
 
@@ -61,33 +60,14 @@ struct YAMLPreviewView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("YAML")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.gray)
-
-                    Text(captureData.yamlString)
-                        .font(.system(.caption, design: .monospaced))
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                Map(position: $mapPosition) {
+                    Marker(poi.name, coordinate: poi.coordinate)
+                        .tint(.red)
                 }
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 HStack(spacing: 12) {
-                    Button(action: copyToClipboard) {
-                        HStack(spacing: 6) {
-                            Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                            Text(copied ? "Copied" : "Copy YAML")
-                        }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                    }
-
                     ShareLink(
                         item: captureData.yamlString,
                         subject: Text(poi.name),
@@ -103,32 +83,25 @@ struct YAMLPreviewView: View {
                         .background(Color.green)
                         .cornerRadius(8)
                     }
-                }
 
-                Button(action: checkIn) {
-                    HStack(spacing: 6) {
-                        Image(systemName: didLogHistory ? "checkmark.circle.fill" : "checkmark.circle")
-                        Text(didLogHistory ? "Checked In" : "Check In")
+                    Button(action: checkIn) {
+                        HStack(spacing: 6) {
+                            Image(systemName: didLogHistory ? "checkmark.circle.fill" : "checkmark.circle")
+                            Text(didLogHistory ? "Checked In" : "Check In")
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .background(didLogHistory ? Color.orange.opacity(0.7) : Color.orange)
+                        .cornerRadius(8)
                     }
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(12)
-                    .background(didLogHistory ? Color.orange.opacity(0.7) : Color.orange)
-                    .cornerRadius(8)
+                    .disabled(didLogHistory)
                 }
-                .disabled(didLogHistory)
-
-                Map(position: $mapPosition) {
-                    Marker(poi.name, coordinate: poi.coordinate)
-                        .tint(.red)
-                }
-                .frame(height: 220)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 Spacer()
             }
             .padding()
-            .navigationTitle("Log Entry")
+            .navigationTitle("Check-In Entry")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -137,14 +110,6 @@ struct YAMLPreviewView: View {
                     }
                 }
             }
-        }
-    }
-
-    private func copyToClipboard() {
-        UIPasteboard.general.string = captureData.yamlString
-        copied = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            copied = false
         }
     }
 
@@ -269,7 +234,7 @@ struct RawCoordinatesView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("Log Entry")
+            .navigationTitle("Check-In Entry")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

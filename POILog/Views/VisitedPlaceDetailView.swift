@@ -2,7 +2,7 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-struct VisitedPlaceDetailView: View {
+struct VisitedLogEntryView: View {
     let record: CheckInRecord
     @EnvironmentObject var historyStore: CheckInHistoryStore
 
@@ -23,57 +23,80 @@ struct VisitedPlaceDetailView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
+        ScrollView {
+            VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("📍 \(record.name)")
+                        .font(.headline)
+                        .lineLimit(2)
+
+                    Text(addressText)
+                        .font(.subheadline)
+                        .foregroundColor(record.address.isEmpty ? .secondary : .gray)
+
+                    Text(categoryText)
+                        .font(.caption)
+                        .foregroundColor(record.category == nil ? .secondary : .orange)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Details")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray)
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        if isEditing {
+                            DatePicker(
+                                "Check-In",
+                                selection: $editedDate,
+                                displayedComponents: [.date, .hourAndMinute]
+                            )
+                            .font(.caption)
+                        } else {
+                            detailRow(label: "Check-In", value: formattedDateTime)
+                        }
+
+                        detailRow(label: "Coordinates", value: coordinateText, monospaced: true)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                }
+
                 Map(position: $mapPosition) {
                     Marker(record.name, coordinate: record.coordinate)
                         .tint(.red)
                 }
                 .frame(height: 220)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-            }
+                .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            Section("Place") {
-                LabeledContent("Name") {
-                    Text(record.name)
-                        .multilineTextAlignment(.trailing)
-                }
-
-                LabeledContent("Address") {
-                    Text(addressText)
-                        .multilineTextAlignment(.trailing)
-                        .foregroundColor(record.address.isEmpty ? .secondary : .primary)
-                }
-
-                LabeledContent("Category") {
-                    Text(categoryText)
-                        .foregroundColor(record.category == nil ? .secondary : .primary)
-                }
-            }
-
-            Section("Location") {
-                LabeledContent("Coordinates") {
-                    Text(coordinateText)
-                        .monospaced()
-                }
-            }
-
-            Section("Check-In") {
-                if isEditing {
-                    DatePicker(
-                        "Date & Time",
-                        selection: $editedDate,
-                        displayedComponents: [.date, .hourAndMinute]
-                    )
-                } else {
-                    LabeledContent("Date & Time") {
-                        Text(formattedDateTime)
+                ShareLink(
+                    item: captureData.yamlString,
+                    subject: Text(record.name),
+                    message: Text(shareMessage)
+                ) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "square.and.arrow.up")
+                        Text("Share")
                     }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(Color.green)
+                    .cornerRadius(8)
                 }
+
+                Spacer()
             }
+            .padding()
         }
-        .navigationTitle(record.name)
+        .navigationTitle("Visited Entry")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if isEditing {
@@ -112,6 +135,36 @@ struct VisitedPlaceDetailView: View {
 
     private var formattedDateTime: String {
         "\(Self.dateFormatter.string(from: currentDate)) @ \(Self.timeFormatter.string(from: currentDate))"
+    }
+
+    private var shareMessage: String {
+        record.address.isEmpty ? "Location log entry" : "Location: \(record.address)"
+    }
+
+    private var captureData: CaptureData {
+        CaptureData(
+            date: Self.dateFormatter.string(from: currentDate),
+            time: Self.timeFormatter.string(from: currentDate),
+            name: record.name,
+            address: record.address,
+            latitude: record.latitude,
+            longitude: record.longitude
+        )
+    }
+
+    @ViewBuilder
+    private func detailRow(label: String, value: String, monospaced: Bool = false) -> some View {
+        HStack(alignment: .top) {
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Spacer()
+
+            Text(value)
+                .font(monospaced ? .system(.caption, design: .monospaced) : .caption)
+                .multilineTextAlignment(.trailing)
+        }
     }
 
     private func saveEdit() {
@@ -156,7 +209,7 @@ struct VisitedPlaceDetailView: View {
         category: "Cafe"
     )
     return NavigationStack {
-        VisitedPlaceDetailView(record: record)
+        VisitedLogEntryView(record: record)
             .environmentObject(CheckInHistoryStore())
     }
 }

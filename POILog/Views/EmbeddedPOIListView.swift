@@ -32,7 +32,7 @@ struct EmbeddedPOIListView: View {
         .sheet(item: $sheetContent) { content in
             switch content {
             case .poiPreview(let poi):
-                YAMLPreviewView(poi: poi)
+                CheckInLogEntryView(poi: poi)
             case .rawCoordinates:
                 RawCoordinatesView(currentLocation: currentLocation)
             }
