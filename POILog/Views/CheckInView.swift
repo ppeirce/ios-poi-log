@@ -61,7 +61,6 @@ struct CheckInView: View {
                 if locationManager.currentLocation != nil {
                     mapCard
                         .padding(.horizontal, 16)
-                        .padding(.top, 6)
                         .padding(.bottom, 12)
                 }
 

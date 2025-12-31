@@ -84,11 +84,16 @@ struct EmbeddedPOIListView: View {
     private var emptyStateRow: some View {
         VStack(spacing: 12) {
             Image(systemName: "mappin.slash")
-                .font(.system(size: 48))
+                .font(.system(size: 36))
                 .foregroundColor(.secondary)
 
             Text("No nearby places found")
+                .font(.headline)
+
+            Text("Try pulling to refresh or use raw coordinates.")
+                .font(.subheadline)
                 .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
 
             if currentLocation != nil {
                 rawCoordinatesButton
@@ -103,13 +108,13 @@ struct EmbeddedPOIListView: View {
     private var noMatchesRow: some View {
         VStack(spacing: 12) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 44))
+                .font(.system(size: 36))
                 .foregroundColor(.secondary)
 
             Text("No matches")
                 .font(.headline)
 
-            Text("Try a different search or use raw coordinates.")
+            Text("Try adjusting your search or use raw coordinates.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
