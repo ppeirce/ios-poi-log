@@ -21,10 +21,6 @@ struct CheckInView: View {
         Group {
             if locationManager.currentLocation == nil {
                 loadingState("Getting your location...")
-            } else if isSearchActive && searchManager.isTextSearching {
-                loadingState("Searching places...")
-            } else if !isSearchActive && searchManager.isSearching {
-                loadingState("Finding nearby places...")
             } else {
                 listContent
             }
@@ -60,27 +56,36 @@ struct CheckInView: View {
     }
 
     private var listContent: some View {
-        List {
-            if locationManager.currentLocation != nil {
-                mapCard
-            }
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                if locationManager.currentLocation != nil {
+                    mapCard
+                        .padding(.horizontal, 16)
+                        .padding(.top, 6)
+                        .padding(.bottom, 12)
+                }
 
-            if shouldShowDiagnostics {
-                coordinateStatus
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
-                    .listRowBackground(Color.clear)
-            }
+                if shouldShowDiagnostics {
+                    coordinateStatus
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 12)
+                }
 
-            EmbeddedPOIListView(
-                pois: displayedPOIs,
-                currentLocation: locationManager.currentLocation,
-                searchRadius: displayedSearchRadius,
-                searchText: searchText
-            )
+                if shouldShowSearchStatus {
+                    searchStatusRow
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 12)
+                }
+
+                EmbeddedPOIListView(
+                    pois: displayedPOIs,
+                    currentLocation: locationManager.currentLocation,
+                    searchRadius: displayedSearchRadius,
+                    searchText: searchText
+                )
+            }
+            .padding(.top, 6)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
         .refreshable {
             await handleRefresh()
         }
@@ -95,9 +100,6 @@ struct CheckInView: View {
         )
         .frame(height: 220)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .listRowSeparator(.hidden)
-        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
-        .listRowBackground(Color.clear)
     }
 
     private var coordinateStatus: some View {
@@ -249,6 +251,26 @@ struct CheckInView: View {
 
     private var displayedSearchRadius: CLLocationDistance {
         isSearchActive ? POISearchManager.textSearchRadius : searchManager.searchRadius
+    }
+
+    private var shouldShowSearchStatus: Bool {
+        (isSearchActive && searchManager.isTextSearching) ||
+        (!isSearchActive && searchManager.isSearching)
+    }
+
+    private var searchStatusRow: some View {
+        HStack(spacing: 10) {
+            ProgressView()
+            Text(isSearchActive ? "Searching places..." : "Finding nearby places...")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemGray6))
+        )
     }
 
     private var mapCenterKey: String? {

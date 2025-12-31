@@ -58,17 +58,16 @@ struct EmbeddedPOIListView: View {
                 .onTapGesture {
                     sheetContent = .poiPreview(poi)
                 }
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                .listRowBackground(Color.clear)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
         }
     }
 
     private var rawCoordinatesRow: some View {
         rawCoordinatesButton
-            .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
-            .listRowBackground(Color.clear)
+            .padding(.horizontal, 16)
+            .padding(.top, 6)
+            .padding(.bottom, 12)
     }
 
     private var rawCoordinatesButton: some View {
@@ -97,9 +96,8 @@ struct EmbeddedPOIListView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .listRowSeparator(.hidden)
-        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-        .listRowBackground(Color.clear)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
     }
 
     private var noMatchesRow: some View {
@@ -122,9 +120,8 @@ struct EmbeddedPOIListView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .listRowSeparator(.hidden)
-        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-        .listRowBackground(Color.clear)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
     }
 }
 
