@@ -18,49 +18,18 @@ struct CheckInView: View {
     private let minSearchDistance: CLLocationDistance = 45.7 // ~150 ft
 
     var body: some View {
-        VStack(spacing: 0) {
-            CurrentLocationMapView(
-                currentLocation: locationManager.currentLocation,
-                mapPosition: $mapPosition,
-                mapCenterCoordinate: $mapCenterCoordinate,
-                shouldRecenterOnLocationChange: !searchManager.debugMode
-            )
-                .frame(height: 280)
-
-            if shouldShowDiagnostics {
-                coordinateStatus
-            }
-
-            Divider()
-
+        Group {
             if locationManager.currentLocation == nil {
-                VStack {
-                    ProgressView("Getting your location...")
-                        .padding(.top, 24)
-                    Spacer()
-                }
+                loadingState("Getting your location...")
             } else if isSearchActive && searchManager.isTextSearching {
-                VStack {
-                    ProgressView("Searching places...")
-                        .padding(.top, 24)
-                    Spacer()
-                }
+                loadingState("Searching places...")
             } else if !isSearchActive && searchManager.isSearching {
-                VStack {
-                    ProgressView("Finding nearby places...")
-                        .padding(.top, 24)
-                    Spacer()
-                }
+                loadingState("Finding nearby places...")
             } else {
-                EmbeddedPOIListView(
-                    pois: displayedPOIs,
-                    currentLocation: locationManager.currentLocation,
-                    searchRadius: searchManager.searchRadius,
-                    searchText: searchText,
-                    onRefresh: handleRefresh
-                )
+                listContent
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle("Check In")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $searchText, prompt: "Search places")
@@ -82,6 +51,55 @@ struct CheckInView: View {
         }
     }
 
+    private func loadingState(_ text: String) -> some View {
+        VStack {
+            ProgressView(text)
+                .padding(.top, 24)
+            Spacer()
+        }
+    }
+
+    private var listContent: some View {
+        List {
+            if locationManager.currentLocation != nil {
+                mapCard
+            }
+
+            if shouldShowDiagnostics {
+                coordinateStatus
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
+                    .listRowBackground(Color.clear)
+            }
+
+            EmbeddedPOIListView(
+                pois: displayedPOIs,
+                currentLocation: locationManager.currentLocation,
+                searchRadius: displayedSearchRadius,
+                searchText: searchText
+            )
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .refreshable {
+            await handleRefresh()
+        }
+    }
+
+    private var mapCard: some View {
+        CurrentLocationMapView(
+            currentLocation: locationManager.currentLocation,
+            mapPosition: $mapPosition,
+            mapCenterCoordinate: $mapCenterCoordinate,
+            shouldRecenterOnLocationChange: !searchManager.debugMode
+        )
+        .frame(height: 220)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
+        .listRowBackground(Color.clear)
+    }
+
     private var coordinateStatus: some View {
         VStack(alignment: .leading, spacing: 4) {
             if searchManager.debugMode {
@@ -100,9 +118,11 @@ struct CheckInView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        .background(Color(.systemGray6))
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemGray6))
+        )
         .contentShape(Rectangle())
         .onTapGesture {
             if searchManager.debugMode {
@@ -225,6 +245,10 @@ struct CheckInView: View {
 
     private var displayedPOIs: [POI] {
         isSearchActive ? searchManager.textSearchResults : searchManager.nearbyPOIs
+    }
+
+    private var displayedSearchRadius: CLLocationDistance {
+        isSearchActive ? POISearchManager.textSearchRadius : searchManager.searchRadius
     }
 
     private var mapCenterKey: String? {
