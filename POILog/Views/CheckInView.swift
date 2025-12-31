@@ -11,6 +11,9 @@ struct CheckInView: View {
     @State private var mapPosition: MapCameraPosition = .automatic
     @State private var mapCenterCoordinate: CLLocationCoordinate2D?
     @State private var lastSearchLocation: CLLocation?
+    @State private var lastTextSearchLocation: CLLocation?
+    @State private var searchText = ""
+    @State private var textSearchTask: Task<Void, Never>?
 
     private let minSearchDistance: CLLocationDistance = 45.7 // ~150 ft
 
@@ -36,7 +39,13 @@ struct CheckInView: View {
                         .padding(.top, 24)
                     Spacer()
                 }
-            } else if searchManager.isSearching {
+            } else if isSearchActive && searchManager.isTextSearching {
+                VStack {
+                    ProgressView("Searching places...")
+                        .padding(.top, 24)
+                    Spacer()
+                }
+            } else if !isSearchActive && searchManager.isSearching {
                 VStack {
                     ProgressView("Finding nearby places...")
                         .padding(.top, 24)
@@ -44,14 +53,17 @@ struct CheckInView: View {
                 }
             } else {
                 EmbeddedPOIListView(
-                    pois: searchManager.nearbyPOIs,
+                    pois: displayedPOIs,
                     currentLocation: locationManager.currentLocation,
                     searchRadius: searchManager.searchRadius,
+                    searchText: searchText,
                     onRefresh: handleRefresh
                 )
             }
         }
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationTitle("Check In")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: "Search places")
         .onReceive(locationManager.$currentLocation.compactMap { $0 }) { coordinate in
             handleLocationUpdate(coordinate)
         }
@@ -64,6 +76,9 @@ struct CheckInView: View {
         }
         .onChange(of: searchManager.debugMode) { _, _ in
             handleDebugModeChange()
+        }
+        .onChange(of: searchText) { _, newValue in
+            handleSearchTextChange(newValue)
         }
     }
 
@@ -99,6 +114,10 @@ struct CheckInView: View {
     private func handleLocationUpdate(_ coordinate: CLLocationCoordinate2D) {
         guard let searchCoordinate = currentSearchCoordinate(fallback: coordinate) else { return }
         performSearchIfNeeded(from: searchCoordinate)
+
+        if isSearchActive {
+            performTextSearchIfNeeded(from: coordinate)
+        }
     }
 
     private func handleMapCenterChange(_ coordinate: CLLocationCoordinate2D) {
@@ -198,6 +217,14 @@ struct CheckInView: View {
 
     private var shouldShowDiagnostics: Bool {
         searchManager.debugMode || locationManager.error != nil
+    }
+
+    private var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var displayedPOIs: [POI] {
+        isSearchActive ? searchManager.textSearchResults : searchManager.nearbyPOIs
     }
 
     private var mapCenterKey: String? {
@@ -305,6 +332,18 @@ struct CheckInView: View {
         performSearchIfNeeded(from: coordinate)
     }
 
+    private func handleSearchTextChange(_ newValue: String) {
+        let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            textSearchTask?.cancel()
+            searchManager.clearTextSearch()
+            return
+        }
+
+        guard let coordinate = locationManager.currentLocation else { return }
+        scheduleTextSearch(query: trimmed, coordinate: coordinate)
+    }
+
     private func performSearchIfNeeded(from coordinate: CLLocationCoordinate2D) {
         if searchManager.isSearching { return }
 
@@ -316,6 +355,27 @@ struct CheckInView: View {
         lastSearchLocation = newLocation
         Task { @MainActor in
             await searchManager.searchNearbyPOIs(from: coordinate)
+        }
+    }
+
+    private func performTextSearchIfNeeded(from coordinate: CLLocationCoordinate2D) {
+        guard isSearchActive else { return }
+
+        let newLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        if let lastLocation = lastTextSearchLocation, newLocation.distance(from: lastLocation) < minSearchDistance {
+            return
+        }
+
+        scheduleTextSearch(query: searchText.trimmingCharacters(in: .whitespacesAndNewlines), coordinate: coordinate)
+    }
+
+    private func scheduleTextSearch(query: String, coordinate: CLLocationCoordinate2D) {
+        textSearchTask?.cancel()
+        lastTextSearchLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        textSearchTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            await searchManager.searchPOIs(matching: query, from: coordinate)
         }
     }
 }

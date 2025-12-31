@@ -7,6 +7,9 @@ class POISearchManager: ObservableObject {
     @Published var nearbyPOIs: [POI] = []
     @Published var isSearching = false
     @Published var error: Error?
+    @Published var textSearchResults: [POI] = []
+    @Published var isTextSearching = false
+    @Published var textSearchError: Error?
     @Published var selectedCategories: Set<MKPointOfInterestCategory> {
         didSet {
             userDefaults.set(selectedCategories.map(\.rawValue), forKey: Self.selectedCategoriesKey)
@@ -18,12 +21,15 @@ class POISearchManager: ObservableObject {
         }
     }
 
-    static let defaultSearchRadius: CLLocationDistance = 8040.67 // 0.5 miles in meters
+    static let defaultSearchRadius: CLLocationDistance = 8040.67 // 5 miles in meters
+    static let textSearchRadius: CLLocationDistance = 12874.72 // 8 miles in meters
     let searchRadius: CLLocationDistance = defaultSearchRadius
     private static let selectedCategoriesKey = "selectedCategories"
     private static let debugModeKey = "debugMode"
 
     private let userDefaults: UserDefaults
+    private var activeTextSearch: MKLocalSearch?
+    private var textSearchToken = UUID()
     static let defaultCategories: Set<MKPointOfInterestCategory> = [.restaurant, .nightlife]
     static var availableCategories: [MKPointOfInterestCategory] {
         var categories: [MKPointOfInterestCategory] = [
@@ -168,6 +174,79 @@ class POISearchManager: ObservableObject {
         }
     }
 
+    func searchPOIs(matching query: String, from coordinate: CLLocationCoordinate2D, radius: CLLocationDistance = textSearchRadius) async {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else {
+            clearTextSearch()
+            return
+        }
+
+        let token = UUID()
+        textSearchToken = token
+        activeTextSearch?.cancel()
+        isTextSearching = true
+        textSearchError = nil
+        textSearchResults = []
+
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            latitudinalMeters: radius * 2,
+            longitudinalMeters: radius * 2
+        )
+
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = trimmedQuery
+        request.region = region
+
+        let search = MKLocalSearch(request: request)
+        activeTextSearch = search
+
+        defer {
+            if token == textSearchToken {
+                isTextSearching = false
+            }
+        }
+
+        do {
+            let response = try await search.start()
+            guard token == textSearchToken else { return }
+
+            let origin = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            var pois = response.mapItems.compactMap { item -> POI? in
+                guard let name = item.name,
+                      let placemark = item.placemark.location else {
+                    return nil
+                }
+
+                let distance = origin.distance(from: placemark)
+                guard distance <= radius else { return nil }
+
+                return POI(
+                    name: name,
+                    address: item.placemark.title ?? "Unknown",
+                    coordinate: placemark.coordinate,
+                    distance: distance,
+                    category: item.pointOfInterestCategory?.displayName
+                )
+            }
+
+            pois.sort { $0.distance < $1.distance }
+            textSearchResults = pois
+        } catch {
+            guard token == textSearchToken else { return }
+            textSearchError = error
+            textSearchResults = []
+        }
+    }
+
+    func clearTextSearch() {
+        textSearchToken = UUID()
+        activeTextSearch?.cancel()
+        activeTextSearch = nil
+        textSearchResults = []
+        textSearchError = nil
+        isTextSearching = false
+    }
 }
 
 extension MKPointOfInterestCategory {

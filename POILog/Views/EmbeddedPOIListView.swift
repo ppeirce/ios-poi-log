@@ -5,6 +5,7 @@ struct EmbeddedPOIListView: View {
     let pois: [POI]
     let currentLocation: CLLocationCoordinate2D?
     let searchRadius: CLLocationDistance
+    let searchText: String
     let onRefresh: () async -> Void
 
     @State private var sheetContent: SheetContent?
@@ -24,7 +25,11 @@ struct EmbeddedPOIListView: View {
     var body: some View {
         Group {
             if pois.isEmpty {
-                emptyState
+                if isSearchActive {
+                    noMatchesState
+                } else {
+                    emptyState
+                }
             } else {
                 listContent
             }
@@ -53,14 +58,7 @@ struct EmbeddedPOIListView: View {
             }
 
             if currentLocation != nil {
-                Button(action: { sheetContent = .rawCoordinates }) {
-                    Label("Use raw coordinates", systemImage: "exclamationmark.circle")
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .foregroundColor(.orange)
-                        .background(Color.orange.opacity(0.12))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
+                rawCoordinatesButton
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 12, trailing: 16))
                 .listRowBackground(Color.clear)
@@ -70,6 +68,21 @@ struct EmbeddedPOIListView: View {
         .scrollContentBackground(.hidden)
         .refreshable {
             await onRefresh()
+        }
+    }
+
+    private var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var rawCoordinatesButton: some View {
+        Button(action: { sheetContent = .rawCoordinates }) {
+            Label("Use raw coordinates", systemImage: "exclamationmark.circle")
+                .frame(maxWidth: .infinity)
+                .padding(12)
+                .foregroundColor(.orange)
+                .background(Color.orange.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
     }
 
@@ -84,15 +97,37 @@ struct EmbeddedPOIListView: View {
                     .foregroundColor(.secondary)
 
                 if currentLocation != nil {
-                    Button(action: { sheetContent = .rawCoordinates }) {
-                        Label("Use raw coordinates", systemImage: "exclamationmark.circle")
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .foregroundColor(.orange)
-                            .background(Color.orange.opacity(0.12))
-                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    }
+                    rawCoordinatesButton
                     .padding(.horizontal)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .refreshable {
+            await onRefresh()
+        }
+    }
+
+    private var noMatchesState: some View {
+        ScrollView {
+            VStack(spacing: 12) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 44))
+                    .foregroundColor(.secondary)
+
+                Text("No matches")
+                    .font(.headline)
+
+                Text("Try a different search or use raw coordinates.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                if currentLocation != nil {
+                    rawCoordinatesButton
+                        .padding(.horizontal)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -110,6 +145,7 @@ struct EmbeddedPOIListView: View {
         pois: [],
         currentLocation: CLLocationCoordinate2D(latitude: 37.8012, longitude: -122.2727),
         searchRadius: POISearchManager.defaultSearchRadius,
+        searchText: "",
         onRefresh: {}
     )
 }
