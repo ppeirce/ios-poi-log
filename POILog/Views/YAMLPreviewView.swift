@@ -4,7 +4,6 @@ import MapKit
 
 struct CheckInLogEntryView: View {
     let poi: POI
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var historyStore: CheckInHistoryStore
 
     @State private var didLogHistory = false
@@ -103,13 +102,6 @@ struct CheckInLogEntryView: View {
             .padding()
             .navigationTitle("Check-In Entry")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Text("Back")
-                    }
-                }
-            }
         }
     }
 
@@ -129,7 +121,6 @@ struct CheckInLogEntryView: View {
 
 struct RawCoordinatesView: View {
     let currentLocation: CLLocationCoordinate2D?
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var historyStore: CheckInHistoryStore
 
     @State private var copied = false
@@ -236,13 +227,6 @@ struct RawCoordinatesView: View {
             .padding()
             .navigationTitle("Check-In Entry")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Text("Back")
-                    }
-                }
-            }
         }
     }
 
