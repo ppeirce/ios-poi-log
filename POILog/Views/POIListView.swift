@@ -159,7 +159,7 @@ struct EmptyStateView: View {
             Text("No places found nearby")
                 .font(.headline)
 
-            Text("No points of interest found within 0.5 miles.")
+            Text("No points of interest found within 5 miles.")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
