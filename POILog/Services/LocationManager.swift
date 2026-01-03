@@ -19,8 +19,20 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func requestLocation() {
         error = nil
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
+        let status = locationManager.authorizationStatus
+
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+            // Don't call requestLocation() yet - delegate will do it on authorization
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager.requestLocation()
+        case .denied, .restricted:
+            // UI will show the denied state
+            break
+        @unknown default:
+            break
+        }
     }
 
     // MARK: - CLLocationManagerDelegate

@@ -19,7 +19,10 @@ struct CheckInView: View {
 
     var body: some View {
         Group {
-            if locationManager.currentLocation == nil {
+            if locationManager.authorizationStatus == .denied ||
+               locationManager.authorizationStatus == .restricted {
+                locationDeniedState
+            } else if locationManager.currentLocation == nil {
                 loadingState("Getting your location...")
             } else {
                 listContent
@@ -53,6 +56,33 @@ struct CheckInView: View {
                 .padding(.top, 24)
             Spacer()
         }
+    }
+
+    private var locationDeniedState: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            Image(systemName: "location.slash")
+                .font(.system(size: 48))
+                .foregroundColor(.secondary)
+
+            Text("Location Access Required")
+                .font(.headline)
+
+            Text("Enable location access in Settings to find nearby places.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            Spacer()
+        }
+        .padding()
     }
 
     private var listContent: some View {
