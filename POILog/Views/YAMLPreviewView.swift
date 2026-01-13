@@ -1,10 +1,11 @@
 import SwiftUI
 import CoreLocation
 import MapKit
+import SwiftData
 
 struct CheckInLogEntryView: View {
     let poi: POI
-    @EnvironmentObject var historyStore: CheckInHistoryStore
+    @Environment(\.modelContext) private var modelContext
 
     @State private var didLogHistory = false
     @State private var mapPosition: MapCameraPosition
@@ -107,21 +108,27 @@ struct CheckInLogEntryView: View {
 
     private func checkIn() {
         guard !didLogHistory else { return }
-        didLogHistory = true
-        let record = CheckInRecord(
+        let record = CheckIn(
             name: poi.name,
             address: poi.address,
             latitude: poi.coordinate.latitude,
             longitude: poi.coordinate.longitude,
             category: poi.category
         )
-        historyStore.add(record)
+        modelContext.insert(record)
+        do {
+            try modelContext.save()
+            didLogHistory = true
+        } catch {
+            modelContext.delete(record)
+            print("Check-in save failed: \(error)")
+        }
     }
 }
 
 struct RawCoordinatesView: View {
     let currentLocation: CLLocationCoordinate2D?
-    @EnvironmentObject var historyStore: CheckInHistoryStore
+    @Environment(\.modelContext) private var modelContext
 
     @State private var copied = false
     @State private var didLogHistory = false
@@ -241,14 +248,20 @@ struct RawCoordinatesView: View {
 
     private func checkIn() {
         guard !didLogHistory, let location = currentLocation else { return }
-        didLogHistory = true
-        let record = CheckInRecord(
+        let record = CheckIn(
             name: "Unknown Location",
             address: "",
             latitude: location.latitude,
             longitude: location.longitude,
             category: nil
         )
-        historyStore.add(record)
+        modelContext.insert(record)
+        do {
+            try modelContext.save()
+            didLogHistory = true
+        } catch {
+            modelContext.delete(record)
+            print("Check-in save failed: \(error)")
+        }
     }
 }

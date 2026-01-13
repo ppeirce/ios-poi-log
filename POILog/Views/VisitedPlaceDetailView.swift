@@ -1,17 +1,18 @@
 import SwiftUI
 import MapKit
 import CoreLocation
+import SwiftData
 
 struct VisitedLogEntryView: View {
-    let record: CheckInRecord
-    @EnvironmentObject var historyStore: CheckInHistoryStore
+    let record: CheckIn
+    @Environment(\.modelContext) private var modelContext
 
     @State private var isEditing = false
     @State private var editedDate: Date
     @State private var currentDate: Date
     @State private var mapPosition: MapCameraPosition
 
-    init(record: CheckInRecord) {
+    init(record: CheckIn) {
         self.record = record
         let region = MKCoordinateRegion(
             center: record.coordinate,
@@ -168,17 +169,15 @@ struct VisitedLogEntryView: View {
     }
 
     private func saveEdit() {
-        let updatedRecord = CheckInRecord(
-            id: record.id,
-            name: record.name,
-            address: record.address,
-            latitude: record.latitude,
-            longitude: record.longitude,
-            category: record.category,
-            createdAt: editedDate
-        )
-        historyStore.update(updatedRecord)
-        currentDate = editedDate
+        record.createdAt = editedDate
+        do {
+            try modelContext.save()
+            currentDate = editedDate
+        } catch {
+            record.createdAt = currentDate
+            editedDate = currentDate
+            print("Save failed: \(error)")
+        }
         isEditing = false
     }
 
@@ -201,15 +200,18 @@ struct VisitedLogEntryView: View {
 }
 
 #Preview {
-    let record = CheckInRecord(
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: CheckIn.self, configurations: config)
+    let record = CheckIn(
         name: "Sample Cafe",
         address: "123 Market St",
         latitude: 37.8012,
         longitude: -122.2727,
         category: "Cafe"
     )
+    container.mainContext.insert(record)
     return NavigationStack {
         VisitedLogEntryView(record: record)
-            .environmentObject(CheckInHistoryStore())
     }
+    .modelContainer(container)
 }

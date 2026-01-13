@@ -1,9 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @StateObject private var searchManager = POISearchManager()
-    @StateObject private var historyStore = CheckInHistoryStore()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -26,7 +26,6 @@ struct ContentView: View {
             }
             .tabItem { Label("Settings", systemImage: "gearshape") }
         }
-        .environmentObject(historyStore)
         .task {
             locationManager.requestLocation()
         }
@@ -40,4 +39,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: CheckIn.self, inMemory: true)
 }

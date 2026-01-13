@@ -1,16 +1,19 @@
 import SwiftUI
 import CoreLocation
 import MapKit
+import SwiftData
 
 struct VisitedPlacesView: View {
     @ObservedObject var locationManager: LocationManager
-    @EnvironmentObject var historyStore: CheckInHistoryStore
+    @Query(sort: \CheckIn.createdAt, order: .reverse)
+    private var checkIns: [CheckIn]
+    @Environment(\.modelContext) private var modelContext
     @State private var searchText = ""
     @State private var dateFilter: DateFilter = .all
 
     var body: some View {
         Group {
-            if historyStore.records.isEmpty {
+            if checkIns.isEmpty {
                 emptyState
                     .padding()
             } else if filteredRecords.isEmpty {
@@ -36,14 +39,14 @@ struct VisitedPlacesView: View {
 
                 Menu {
                     ShareLink(
-                        item: historyStore.exportJSON(records: filteredRecords),
+                        item: ExportService.exportJSONFile(filteredRecords),
                         preview: SharePreview("POI Log", image: Image(systemName: "doc.plaintext"))
                     ) {
                         Label("Export JSON", systemImage: "doc.text")
                     }
 
                     ShareLink(
-                        item: historyStore.exportCSV(records: filteredRecords),
+                        item: ExportService.exportCSVFile(filteredRecords),
                         preview: SharePreview("POI Log", image: Image(systemName: "tablecells"))
                     ) {
                         Label("Export CSV", systemImage: "tablecells")
@@ -61,7 +64,7 @@ struct VisitedPlacesView: View {
         List {
             if let mapRegion {
                 Map(position: .constant(.region(mapRegion)), interactionModes: []) {
-                    ForEach(mapRecords) { record in
+                    ForEach(mapRecords, id: \.id) { record in
                         Marker(record.name, coordinate: record.coordinate)
                     }
                 }
@@ -72,7 +75,7 @@ struct VisitedPlacesView: View {
                 .listRowBackground(Color.clear)
             }
 
-            ForEach(filteredRecords) { record in
+            ForEach(filteredRecords, id: \.id) { record in
                 NavigationLink {
                     VisitedLogEntryView(record: record)
                 } label: {
@@ -83,7 +86,7 @@ struct VisitedPlacesView: View {
                 .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                 .listRowBackground(Color.clear)
             }
-            .onDelete(perform: historyStore.remove)
+            .onDelete(perform: delete)
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
@@ -119,8 +122,8 @@ struct VisitedPlacesView: View {
         }
     }
 
-    private var filteredRecords: [CheckInRecord] {
-        var records = historyStore.records
+    private var filteredRecords: [CheckIn] {
+        var records = checkIns
         if !searchText.isEmpty {
             let needle = searchText.lowercased()
             records = records.filter {
@@ -136,7 +139,7 @@ struct VisitedPlacesView: View {
         return records
     }
 
-    private var mapRecords: [CheckInRecord] {
+    private var mapRecords: [CheckIn] {
         Array(filteredRecords.prefix(60))
     }
 
@@ -192,10 +195,22 @@ struct VisitedPlacesView: View {
             }
         }
     }
+
+    private func delete(_ offsets: IndexSet) {
+        for index in offsets {
+            let record = filteredRecords[index]
+            modelContext.delete(record)
+        }
+        do {
+            try modelContext.save()
+        } catch {
+            print("Delete failed: \(error)")
+        }
+    }
 }
 
 private struct HistoryRowView: View {
-    let record: CheckInRecord
+    let record: CheckIn
     let currentLocation: CLLocationCoordinate2D?
 
     var body: some View {
@@ -274,16 +289,16 @@ private struct HistoryRowView: View {
 }
 
 #Preview {
-    let historyStore = CheckInHistoryStore()
-    historyStore.add(
-        CheckInRecord(
-            name: "Sample Cafe",
-            address: "123 Market St",
-            latitude: 37.8012,
-            longitude: -122.2727,
-            category: "Cafe"
-        )
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: CheckIn.self, configurations: config)
+    let record = CheckIn(
+        name: "Sample Cafe",
+        address: "123 Market St",
+        latitude: 37.8012,
+        longitude: -122.2727,
+        category: "Cafe"
     )
+    container.mainContext.insert(record)
     return VisitedPlacesView(locationManager: LocationManager())
-        .environmentObject(historyStore)
+        .modelContainer(container)
 }

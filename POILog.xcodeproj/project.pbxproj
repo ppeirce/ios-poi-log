@@ -11,20 +11,23 @@
 		D1C4E92B2B1234567890ABCD /* POILog/Views/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E92C2B1234567890ABCD /* POILog/Views/ContentView.swift */; };
 		D1C4E92D2B1234567890ABCD /* POILog/Views/POIListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E92E2B1234567890ABCD /* POILog/Views/POIListView.swift */; };
 		D1C4E92F2B1234567890ABCD /* POILog/Views/YAMLPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9302B1234567890ABCD /* POILog/Views/YAMLPreviewView.swift */; };
-		D1C4E9602B1234567890ABCD /* POILog/Views/CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9612B1234567890ABCD /* POILog/Views/CheckInView.swift */; };
-		D1C4E9622B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9632B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift */; };
-		D1C4E9642B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9652B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift */; };
-		D1C4E9662B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9672B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift */; };
-		D1C4E9802B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9812B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift */; };
-		D1C4E9722B1234567890ABCD /* POILog/Views/CategorySelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9732B1234567890ABCD /* POILog/Views/CategorySelectionView.swift */; };
-		D1C4E9682B1234567890ABCD /* POILog/Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9692B1234567890ABCD /* POILog/Views/SettingsView.swift */; };
 		D1C4E9312B1234567890ABCD /* POILog/Models/POI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9322B1234567890ABCD /* POILog/Models/POI.swift */; };
 		D1C4E9332B1234567890ABCD /* POILog/Models/LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9342B1234567890ABCD /* POILog/Models/LocationData.swift */; };
 		D1C4E9352B1234567890ABCD /* POILog/Services/LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9362B1234567890ABCD /* POILog/Services/LocationManager.swift */; };
 		D1C4E9372B1234567890ABCD /* POILog/Services/POISearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9382B1234567890ABCD /* POILog/Services/POISearchManager.swift */; };
-		D1C4E9712B1234567890ABCD /* POILog/Services/CheckInHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9702B1234567890ABCD /* POILog/Services/CheckInHistoryStore.swift */; };
 		D1C4E9392B1234567890ABCD /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C4E93A2B1234567890ABCD /* MapKit.framework */; };
 		D1C4E93B2B1234567890ABCD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C4E93C2B1234567890ABCD /* CoreLocation.framework */; };
+		D1C4E9602B1234567890ABCD /* POILog/Views/CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9612B1234567890ABCD /* POILog/Views/CheckInView.swift */; };
+		D1C4E9622B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9632B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift */; };
+		D1C4E9642B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9652B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift */; };
+		D1C4E9662B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9672B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift */; };
+		D1C4E9682B1234567890ABCD /* POILog/Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9692B1234567890ABCD /* POILog/Views/SettingsView.swift */; };
+		D1C4E9722B1234567890ABCD /* POILog/Views/CategorySelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9732B1234567890ABCD /* POILog/Views/CategorySelectionView.swift */; };
+		D1C4E9802B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9812B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift */; };
+		D1C4E9922B1234567890ABCD /* POILog/Models/CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9902B1234567890ABCD /* POILog/Models/CheckIn.swift */; };
+		D1C4E9942B1234567890ABCD /* POILog/Services/MigrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9932B1234567890ABCD /* POILog/Services/MigrationService.swift */; };
+		D1C4E9962B1234567890ABCD /* POILog/Services/ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9952B1234567890ABCD /* POILog/Services/ExportService.swift */; };
+		D1C4E9982B1234567890ABCD /* POILog/Services/ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1C4E9972B1234567890ABCD /* POILog/Services/ImportService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,21 +35,24 @@
 		D1C4E92C2B1234567890ABCD /* POILog/Views/ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E92E2B1234567890ABCD /* POILog/Views/POIListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/POIListView.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E9302B1234567890ABCD /* POILog/Views/YAMLPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/YAMLPreviewView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9612B1234567890ABCD /* POILog/Views/CheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CheckInView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9632B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CurrentLocationMapView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9652B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/EmbeddedPOIListView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9672B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/VisitedPlacesView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9812B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/VisitedPlaceDetailView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9732B1234567890ABCD /* POILog/Views/CategorySelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CategorySelectionView.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9692B1234567890ABCD /* POILog/Views/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E9322B1234567890ABCD /* POILog/Models/POI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Models/POI.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E9342B1234567890ABCD /* POILog/Models/LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Models/LocationData.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E9362B1234567890ABCD /* POILog/Services/LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/LocationManager.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E9382B1234567890ABCD /* POILog/Services/POISearchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/POISearchManager.swift; sourceTree = SOURCE_ROOT; };
-		D1C4E9702B1234567890ABCD /* POILog/Services/CheckInHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/CheckInHistoryStore.swift; sourceTree = SOURCE_ROOT; };
 		D1C4E93A2B1234567890ABCD /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D1C4E93C2B1234567890ABCD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		D1C4E93D2B1234567890ABCD /* POILog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = POILog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1C4E9612B1234567890ABCD /* POILog/Views/CheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CheckInView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9632B1234567890ABCD /* POILog/Views/CurrentLocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CurrentLocationMapView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9652B1234567890ABCD /* POILog/Views/EmbeddedPOIListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/EmbeddedPOIListView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9672B1234567890ABCD /* POILog/Views/VisitedPlacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/VisitedPlacesView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9692B1234567890ABCD /* POILog/Views/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9732B1234567890ABCD /* POILog/Views/CategorySelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/CategorySelectionView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9812B1234567890ABCD /* POILog/Views/VisitedPlaceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Views/VisitedPlaceDetailView.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9902B1234567890ABCD /* POILog/Models/CheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Models/CheckIn.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9932B1234567890ABCD /* POILog/Services/MigrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/MigrationService.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9952B1234567890ABCD /* POILog/Services/ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/ExportService.swift; sourceTree = SOURCE_ROOT; };
+		D1C4E9972B1234567890ABCD /* POILog/Services/ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POILog/Services/ImportService.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +107,7 @@
 		D1C4E9432B1234567890ABCD /* POILog/Models */ = {
 			isa = PBXGroup;
 			children = (
+				D1C4E9902B1234567890ABCD /* POILog/Models/CheckIn.swift */,
 				D1C4E9322B1234567890ABCD /* POILog/Models/POI.swift */,
 				D1C4E9342B1234567890ABCD /* POILog/Models/LocationData.swift */,
 			);
@@ -110,8 +117,10 @@
 		D1C4E9442B1234567890ABCD /* POILog/Services */ = {
 			isa = PBXGroup;
 			children = (
-				D1C4E9702B1234567890ABCD /* POILog/Services/CheckInHistoryStore.swift */,
+				D1C4E9952B1234567890ABCD /* POILog/Services/ExportService.swift */,
+				D1C4E9972B1234567890ABCD /* POILog/Services/ImportService.swift */,
 				D1C4E9362B1234567890ABCD /* POILog/Services/LocationManager.swift */,
+				D1C4E9932B1234567890ABCD /* POILog/Services/MigrationService.swift */,
 				D1C4E9382B1234567890ABCD /* POILog/Services/POISearchManager.swift */,
 			);
 			path = POILog/Services;
@@ -215,9 +224,12 @@
 				D1C4E92F2B1234567890ABCD /* POILog/Views/YAMLPreviewView.swift in Sources */,
 				D1C4E9312B1234567890ABCD /* POILog/Models/POI.swift in Sources */,
 				D1C4E9332B1234567890ABCD /* POILog/Models/LocationData.swift in Sources */,
+				D1C4E9922B1234567890ABCD /* POILog/Models/CheckIn.swift in Sources */,
 				D1C4E9352B1234567890ABCD /* POILog/Services/LocationManager.swift in Sources */,
+				D1C4E9962B1234567890ABCD /* POILog/Services/ExportService.swift in Sources */,
+				D1C4E9982B1234567890ABCD /* POILog/Services/ImportService.swift in Sources */,
+				D1C4E9942B1234567890ABCD /* POILog/Services/MigrationService.swift in Sources */,
 				D1C4E9372B1234567890ABCD /* POILog/Services/POISearchManager.swift in Sources */,
-				D1C4E9712B1234567890ABCD /* POILog/Services/CheckInHistoryStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
