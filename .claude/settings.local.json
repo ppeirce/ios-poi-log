@@ -16,7 +16,9 @@
       "Bash(bd update:*)",
       "Bash(bd close:*)",
       "Bash(bd list:*)",
-      "Bash(bd create:*)"
+      "Bash(bd create:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ]
   }
 }
