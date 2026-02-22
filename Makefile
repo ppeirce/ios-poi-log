@@ -68,7 +68,7 @@ run: build sim-boot ## Build and run on simulator
 
 run-device: build-device ## Build and run on physical device
 	$(eval APP := $(shell find $(DERIVED_DATA) -name 'POILog.app' -path '*/Debug-iphoneos/*' | head -1))
-	$(eval DEVICE := $(shell xcrun devicectl list devices 2>/dev/null | grep -m1 'iPhone\|iPad' | awk '{print $$NF}'))
+	$(eval DEVICE := $(shell xcrun devicectl list devices 2>/dev/null | grep -m1 'iPhone' | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}'))
 	xcrun devicectl device install app --device $(DEVICE) "$(APP)"
 	xcrun devicectl device process launch --device $(DEVICE) $(BUNDLE_ID)
 

@@ -20,7 +20,9 @@
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(git:*)",
-      "Bash(make clean && make test 2>&1)"
+      "Bash(make clean && make test 2>&1)",
+      "Bash(xcrun devicectl list devices)",
+      "Bash(make build-device:*)"
     ]
   }
 }
