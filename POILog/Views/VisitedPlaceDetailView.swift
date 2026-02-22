@@ -135,7 +135,7 @@ struct VisitedLogEntryView: View {
     }
 
     private var formattedDateTime: String {
-        "\(Self.dateFormatter.string(from: currentDate)) @ \(Self.timeFormatter.string(from: currentDate))"
+        "\(CaptureData.dateFormatter.string(from: currentDate)) @ \(CaptureData.timeFormatter.string(from: currentDate))"
     }
 
     private var shareMessage: String {
@@ -144,8 +144,7 @@ struct VisitedLogEntryView: View {
 
     private var captureData: CaptureData {
         CaptureData(
-            date: Self.dateFormatter.string(from: currentDate),
-            time: Self.timeFormatter.string(from: currentDate),
+            at: currentDate,
             name: record.name,
             address: record.address,
             latitude: record.latitude,
@@ -186,17 +185,6 @@ struct VisitedLogEntryView: View {
         isEditing = false
     }
 
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
 }
 
 #Preview {

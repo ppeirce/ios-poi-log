@@ -260,7 +260,7 @@ private struct HistoryRowView: View {
     }
 
     private var formattedDate: String {
-        "\(Self.dateFormatter.string(from: record.createdAt)) @ \(Self.timeFormatter.string(from: record.createdAt))"
+        "\(CaptureData.dateFormatter.string(from: record.createdAt)) @ \(CaptureData.timeFormatter.string(from: record.createdAt))"
     }
 
     private var distanceText: String? {
@@ -275,17 +275,6 @@ private struct HistoryRowView: View {
         return String(format: "%.2f mi", miles)
     }
 
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
 }
 
 #Preview {

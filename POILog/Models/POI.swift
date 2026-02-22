@@ -26,6 +26,36 @@ struct CaptureData: Codable {
     let latitude: Double
     let longitude: Double
 
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
+    init(date: String, time: String, name: String, address: String, latitude: Double, longitude: Double) {
+        self.date = date
+        self.time = time
+        self.name = name
+        self.address = address
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+
+    init(at date: Date = Date(), name: String, address: String, latitude: Double, longitude: Double) {
+        self.date = Self.dateFormatter.string(from: date)
+        self.time = Self.timeFormatter.string(from: date)
+        self.name = name
+        self.address = address
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+
     var yamlString: String {
         let formattedLatitude = String(format: "%.6f", latitude)
         let formattedLongitude = String(format: "%.6f", longitude)
