@@ -17,21 +17,31 @@ A minimal iOS app for checking in to nearby points of interest, exporting YAML, 
 
 ```
 POILog/
-├── App.swift                    # Main app entry point
+├── App.swift                       # Main app entry point
 ├── Models/
-│   ├── POI.swift               # Point of Interest data model
-│   └── LocationData.swift      # Location coordinate + timestamp
+│   ├── CheckIn.swift               # SwiftData check-in model
+│   ├── LocationData.swift          # Location coordinate + timestamp
+│   └── POI.swift                   # Point of Interest data model
 ├── Services/
-│   ├── LocationManager.swift   # CoreLocation wrapper, handles location requests
-│   ├── POISearchManager.swift  # MapKit local search for nearby POIs
-│   └── CheckInHistoryStore.swift # Local history persistence + export
+│   ├── ExportService.swift         # JSON/CSV export
+│   ├── ImportService.swift         # JSON/CSV import
+│   ├── LocationManager.swift       # CoreLocation wrapper
+│   ├── MigrationService.swift      # Legacy data migration
+│   └── POISearchManager.swift      # MapKit local search
 └── Views/
-    ├── ContentView.swift       # Tabbed navigation root
-    ├── CheckInView.swift       # Primary check-in flow
-    ├── EmbeddedPOIListView.swift # Nearby POI list + refresh
-    ├── YAMLPreviewView.swift   # YAML preview + map + share
-    ├── VisitedPlacesView.swift # History list + exports
-    └── SettingsView.swift      # Category + debug settings
+    ├── CategorySelectionView.swift  # POI category picker
+    ├── CheckInView.swift            # Primary check-in flow
+    ├── ContentView.swift            # Tabbed navigation root
+    ├── CurrentLocationMapView.swift # Embedded map view
+    ├── EmbeddedPOIListView.swift    # Nearby POI list + refresh
+    ├── POIListView.swift            # Full POI list with actions
+    ├── SettingsView.swift           # Category + debug settings
+    ├── VisitedPlaceDetailView.swift # Check-in detail view
+    ├── VisitedPlacesView.swift      # History list + exports
+    └── YAMLPreviewView.swift        # YAML preview + map + share
+POILogTests/
+├── ExportServiceTests.swift         # CSV/JSON export tests
+└── POITests.swift                   # POI model + YAML tests
 ```
 
 ## How It Works
