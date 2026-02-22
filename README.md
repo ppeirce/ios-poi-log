@@ -56,11 +56,61 @@ address: 300 Webster St, Oakland, CA 94607
 coordinates: 37.801200, -122.272700
 ```
 
+## CLI Build & Run
+
+This project is fully buildable, testable, and deployable from the command line. No Xcode GUI needed.
+
+The Xcode project is **generated** from `project.yml` using [XcodeGen](https://github.com/yonaskolb/XcodeGen). The `.xcodeproj` is gitignored — `project.yml` is the source of truth.
+
+### Prerequisites
+
+```bash
+brew install xcodegen xcbeautify   # xcbeautify is optional but recommended
+```
+
+### Quick Start
+
+```bash
+make help          # Show all available commands
+make build         # Build debug for simulator
+make run           # Build and run on simulator
+make test          # Run unit tests
+make run-device    # Build and run on connected iPhone
+```
+
+### All Commands
+
+| Command | Description |
+|---------|-------------|
+| `make generate` | Regenerate .xcodeproj from project.yml |
+| `make build` | Build debug for simulator |
+| `make build-device` | Build debug for physical device |
+| `make build-release` | Build release |
+| `make run` | Build and launch on simulator |
+| `make run-device` | Build and launch on physical device |
+| `make test` | Run unit tests on simulator |
+| `make archive` | Create release archive |
+| `make export` | Export development IPA |
+| `make export-appstore` | Export for App Store |
+| `make upload` | Upload to App Store Connect |
+| `make clean` | Clean build artifacts |
+| `make sim-list` | List available simulators |
+| `make device-list` | List connected devices |
+| `make check-tools` | Check installed tools |
+
+### Overriding Defaults
+
+```bash
+make run SIMULATOR="iPhone Air"
+make build CONFIGURATION=Release
+```
+
 ## Build Requirements
 
 - Xcode 16.0+
 - iOS 17.0+
 - Swift 6.0+
+- XcodeGen (`brew install xcodegen`)
 
 ## Key Dependencies
 
@@ -68,6 +118,7 @@ coordinates: 37.801200, -122.272700
 - **MapKit**: Local POI search
 - **CoreLocation**: GPS location services
 - **Combine**: Reactive data updates
+- **SwiftData**: Local data persistence
 
 ## Configuration
 
@@ -78,11 +129,3 @@ The app uses:
 - Category filtering with defaults to Restaurants + Nightlife
 - Optional debug mode diagnostics
 - Date + time fields in YAML with 6-decimal coordinates
-
-## Next Steps
-
-To build and run:
-1. Open `POILog.xcodeproj` in Xcode
-2. Set a development team and bundle identifier
-3. Enable "Maps" capability
-4. Build for iOS 17+

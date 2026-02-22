@@ -290,6 +290,7 @@ private struct HistoryRowView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    // swiftlint:disable:next force_try
     let container = try! ModelContainer(for: CheckIn.self, configurations: config)
     let record = CheckIn(
         name: "Sample Cafe",

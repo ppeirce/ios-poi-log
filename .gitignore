@@ -1,3 +1,6 @@
+# Generated Xcode project (source of truth is project.yml)
+POILog.xcodeproj/
+
 # Xcode
 build/
 *.pbxuser
@@ -38,6 +41,10 @@ Podfile.lock
 .vscode/
 *.swp
 *.swo
+
+# CLI build artifacts
+.deriveddata/
+.build/
 
 # Derived data
 .xcodeproj/xcuserdata/

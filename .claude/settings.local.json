@@ -18,7 +18,9 @@
       "Bash(bd list:*)",
       "Bash(bd create:*)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git:*)",
+      "Bash(make clean && make test 2>&1)"
     ]
   }
 }
