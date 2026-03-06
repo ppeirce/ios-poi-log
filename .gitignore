@@ -46,6 +46,9 @@ Podfile.lock
 .deriveddata/
 .build/
 
+# Claude Code
+.claude/
+
 # Derived data
 .xcodeproj/xcuserdata/
 .xcodeproj/project.xcworkspace/xcuserdata/

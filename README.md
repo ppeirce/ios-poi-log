@@ -2,6 +2,8 @@
 
 A minimal iOS app for checking in to nearby points of interest, exporting YAML, and keeping a personal visit log with JSON/CSV exports.
 
+Released under the [MIT License](LICENSE).
+
 ## Features
 
 - **Check In Flow**: Auto-request location and fetch nearby POIs
@@ -129,6 +131,20 @@ make build CONFIGURATION=Release
 - **CoreLocation**: GPS location services
 - **Combine**: Reactive data updates
 - **SwiftData**: Local data persistence
+
+## Releasing a new version
+
+Bump the version, add release notes, tag, and push:
+
+```sh
+./scripts/bump-version.sh 1.1.0
+# Edit CHANGELOG.md to add release notes for the new version
+git commit -am "Bump version to 1.1.0"
+git tag -a v1.1.0 -m "v1.1.0"
+git push origin master v1.1.0
+```
+
+Pushing a `v*` tag triggers the GitHub Actions release workflow, which runs tests, archives, uploads to TestFlight, and creates a GitHub Release.
 
 ## Configuration
 
