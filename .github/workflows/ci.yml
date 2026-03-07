@@ -18,16 +18,20 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Download iOS simulator
-        run: xcodebuild -downloadPlatform iOS
+      - name: Prepare simulator
+        run: |
+          xcrun simctl list runtimes
+          xcrun simctl list devices available
+          # Create a simulator if none exist
+          RUNTIME=$(xcrun simctl list runtimes -j | python3 -c "import sys,json; rts=json.load(sys.stdin)['runtimes']; print(next(r['identifier'] for r in reversed(rts) if 'iOS' in r['name'] and r['isAvailable']))")
+          echo "Using runtime: $RUNTIME"
+          xcrun simctl create "CI iPhone" "iPhone 16 Pro" "$RUNTIME" || true
+          xcrun simctl list devices available
 
       - name: Run tests
         run: |
-          DEST=$(xcrun simctl list devices available -j \
-            | python3 -c "import sys,json; devs=json.load(sys.stdin)['devices']; print(next(d['name'] for r in sorted(devs,reverse=True) for d in devs[r] if 'iPhone' in d['name'] and d['isAvailable']))")
-          echo "Using simulator: $DEST"
           xcodebuild test \
             -project POILog.xcodeproj \
             -scheme POILog \
-            -destination "platform=iOS Simulator,name=$DEST" \
+            -destination 'platform=iOS Simulator,name=CI iPhone' \
             -derivedDataPath .deriveddata
