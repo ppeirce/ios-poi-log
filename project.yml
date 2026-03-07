@@ -34,6 +34,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         SWIFT_EMIT_LOC_STRINGS: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - sdk: MapKit.framework
       - sdk: CoreLocation.framework
