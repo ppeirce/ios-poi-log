@@ -99,8 +99,10 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
+          IPA=$(find .build/ipa -name '*.ipa' | head -1)
+          echo "Uploading: $IPA"
           xcrun altool --upload-app \
-            -f .build/ipa/POILog.ipa \
+            -f "$IPA" \
             -t ios \
             --apiKey "$ASC_KEY_ID" \
             --apiIssuer "$ASC_ISSUER_ID"
