@@ -61,7 +61,11 @@ jobs:
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_KEY_CONTENT" > ~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
+          KEY_PATH=~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
+          printf '%s\n' "$ASC_KEY_CONTENT" > "$KEY_PATH"
+          # Verify the key looks valid
+          head -1 "$KEY_PATH"
+          wc -l < "$KEY_PATH"
 
       - name: Archive
         env:
