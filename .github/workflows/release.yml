@@ -62,10 +62,12 @@ jobs:
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
           KEY_PATH=~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
-          printf '%s\n' "$ASC_KEY_CONTENT" > "$KEY_PATH"
-          # Verify the key looks valid
-          head -1 "$KEY_PATH"
-          wc -l < "$KEY_PATH"
+          echo "$ASC_KEY_CONTENT" > "$KEY_PATH"
+          # Debug: show structure without revealing content
+          echo "Line count: $(wc -l < "$KEY_PATH")"
+          echo "First line starts with: $(head -c 10 "$KEY_PATH")"
+          echo "File size: $(wc -c < "$KEY_PATH")"
+          grep -c "BEGIN\|END" "$KEY_PATH" || echo "No PEM markers found"
 
       - name: Archive
         env:
