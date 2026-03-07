@@ -40,14 +40,14 @@ struct VisitedPlacesView: View {
                 Menu {
                     ShareLink(
                         item: ExportService.exportJSONFile(filteredRecords),
-                        preview: SharePreview("POI Log", image: Image(systemName: "doc.plaintext"))
+                        preview: SharePreview("Poi Pond", image: Image(systemName: "doc.plaintext"))
                     ) {
                         Label("Export JSON", systemImage: "doc.text")
                     }
 
                     ShareLink(
                         item: ExportService.exportCSVFile(filteredRecords),
-                        preview: SharePreview("POI Log", image: Image(systemName: "tablecells"))
+                        preview: SharePreview("Poi Pond", image: Image(systemName: "tablecells"))
                     ) {
                         Label("Export CSV", systemImage: "tablecells")
                     }

@@ -1,4 +1,4 @@
-# POI Logger
+# Poi Pond
 
 A minimal iOS app for checking in to nearby points of interest, exporting YAML, and keeping a personal visit log with JSON/CSV exports.
 
