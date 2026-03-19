@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - 2026-03-19
+
+- Add export compliance flag for automatic TestFlight availability
+- Updated app icon
+
+
 ## 1.0.0 - 2026-03-06
 
 Initial public release.

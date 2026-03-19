@@ -22,7 +22,10 @@
       "Bash(git:*)",
       "Bash(make clean && make test 2>&1)",
       "Bash(xcrun devicectl list devices)",
-      "Bash(make build-device:*)"
+      "Bash(make build-device:*)",
+      "Bash(make device-list:*)",
+      "Bash(make run-device:*)",
+      "Bash(asc apps:*)"
     ]
   }
 }
